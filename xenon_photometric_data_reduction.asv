@@ -108,8 +108,8 @@ for i = 1:length(hrs)
         duv_temp = [duv(indices(j,1),i) duv(indices(j,2),i)];
         duv_avg(j,i) = mean(duv_temp(duv_temp~=0&~isnan(duv_temp)));
         
-        power_temp = [power(indices(j,1),i) power(indices(j,2),i)];
-        power_avg(j,i) = mean(power_temp(power_temp~=0&~isnan(power_temp)));
+        power_temp = [duv(indices(j,1),i) duv(indices(j,2),i)];
+        duv_avg(j,i) = mean(duv_temp(duv_temp~=0&~isnan(duv_temp)));
         
         sp_ratio_temp = [sp_ratio(indices(j,1),i) sp_ratio(indices(j,2),i)];
         sp_ratio_avg(j,i) = mean(sp_ratio_temp(sp_ratio_temp~=0&~isnan(sp_ratio_temp)));
@@ -164,11 +164,11 @@ parameter = {'lumens'
     'duv'};
 
 for i = 1:length(parameter)
-    a.(parameter{i}).bareInitial = mean(b.(parameter{i})(bare,1));
-    a.(parameter{i}).fixturesInitial = mean(b.(parameter{i})(fixtures,1));
-    noNan = ~isnan(b.(parameter{i})(:,end));
-    a.(parameter{i}).bareFinal = mean(b.(parameter{i})(bare&noNan,end));
-    a.(parameter{i}).fixturesFinal = mean(b.(parameter{i})(fixtures&noNan,end));
+a.(parameter{i}).bareInitial = mean(b.(parameter{i})(bare,1));
+a.(parameter{i}).fixturesInitial = mean(b.(parameter{i})(fixtures,1));
+noNan = ~isnan(b.(parameter{i})(:,end));
+a.(parameter{i}).bareFinal = mean(b.(parameter{i})(bare&noNan,end));
+a.(parameter{i}).fixturesFinal = mean(b.(parameter{i})(fixtures&noNan,end));
 end
 
 %% ------------------------------Plots------------------------------------------------------
@@ -233,11 +233,11 @@ figure
 hold all
 plot([hrs(1) hrs(end)],[manufactures_specs.sp_ratio,manufactures_specs.sp_ratio],'LineStyle','--','Color',spec_color)
 % for i = 1:length(initial_indices)
-%     plot(hrs,sp_ratio(initial_indices(i),:),'Color',colors(i,:),'LineWidth', linewdth)
+%     plot(hrs,sp_ratio(initial_indices(i),:),'Color',colors(i,:),'LineWidth', linewdth) 
 % end
 for i = 1:length(indices)
     good = ~isnan(sp_ratio_avg(i,:));
-    plot(hrs(good),sp_ratio_avg(i,good),'Color',colors(i,:),'LineWidth', linewdth)
+    plot(hrs(good),sp_ratio_avg(i,good),'Color',colors(i,:),'LineWidth', linewdth) 
 end
 legend('spec','1','2','3','4','5','6','7','B1','B2','B3','B4','B5','B6','B7','B8','B9','Location','EastOutside')
 title('Scotopic/Photopic Ratio')
@@ -259,11 +259,11 @@ figure
 hold all
 plot([hrs(1) hrs(end)],[manufactures_specs.CRI,manufactures_specs.CRI],'LineStyle','--','Color',spec_color)
 % for i = 1:length(initial_indices)
-%     plot(hrs,CRI(initial_indices(i),:),'Color',colors(i,:),'LineWidth', linewdth)
+%     plot(hrs,CRI(initial_indices(i),:),'Color',colors(i,:),'LineWidth', linewdth) 
 % end
 for i = 1:length(indices)
     good = ~isnan(CRI_avg(i,:));
-    plot(hrs(good),CRI_avg(i,good),'Color',colors(i,:),'LineWidth', linewdth)
+    plot(hrs(good),CRI_avg(i,good),'Color',colors(i,:),'LineWidth', linewdth) 
 end
 h = gca;
 set(h,'YLim',[0,100])
@@ -313,11 +313,11 @@ xlim([0 hrs(end)])
 figure
 hold all
 % for i = 1:length(initial_indices)
-%     plot(hrs,duv(initial_indices(i),:),'Color',colors(i,:),'LineWidth', linewdth)
+%     plot(hrs,duv(initial_indices(i),:),'Color',colors(i,:),'LineWidth', linewdth) 
 % end
 for i = 1:length(indices)
     good = ~isnan(duv_avg(i,:));
-    plot(hrs(good),duv_avg(i,good),'Color',colors(i,:),'LineWidth', linewdth)
+    plot(hrs(good),duv_avg(i,good),'Color',colors(i,:),'LineWidth', linewdth) 
 end
 h1 = gca;
 set(h1,'YLim',[-0.02 0.02])
@@ -339,23 +339,23 @@ xlim([0 hrs(end)])
 figure
 hold all
 % for i = 1:length(initial_indices)
-%     plot(hrs,duv(initial_indices(i),:),'Color',colors(i,:),'LineWidth', linewdth)
+%     plot(hrs,duv(initial_indices(i),:),'Color',colors(i,:),'LineWidth', linewdth) 
 % end
 for i = 1:length(indices)
-    good = ~isnan(power_avg(i,:));
-    plot(hrs(good),power_avg(i,good),'Color',colors(i,:),'LineWidth', linewdth)
+    good = ~isnan(duv_avg(i,:));
+    plot(hrs(good),duv_avg(i,good),'Color',colors(i,:),'LineWidth', linewdth) 
 end
 h1 = gca;
-% set(h1,'YLim',[-0.02 0.02])
+set(h1,'YLim',[-0.02 0.02])
 title('Deviation From the Black Body Locus')
 ylabel('Duv')
 xlabel('Time (hours)')
 legend('1','2','3','4','5','6','7','B1','B2','B3','B4','B5','B6','B7','B8','B9','Location','EastOutside')
-figure;boxplot(duv(initial_indices,:),hrs)
+% figure;boxplot(duv(initial_indices,:),hrs)
 for i = 1:16
     lampInd = find(offInd(:,1)==i);
     if ~isempty(lampInd)
-        plot(hrs(offInd(lampInd,2)-1),power_avg(i,offInd(lampInd,2)-1),'Color',colors(i,:),'LineWidth', linewdth,'Marker','x','MarkerSize',12)
+        plot(hrs(offInd(lampInd,2)-1),duv_avg(i,offInd(lampInd,2)-1),'Color',colors(i,:),'LineWidth', linewdth,'Marker','x','MarkerSize',12)
     end
 end
 grid on
